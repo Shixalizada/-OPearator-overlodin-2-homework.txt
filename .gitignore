@@ -1,32 +1,114 @@
-# Prerequisites
-*.d
+#include<string>
+#include<vector>
+using namespace std;
+#include<iostream>
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+class Student
+{
+public:
+	int id;
+	string _name = "";
+	string _surname = "";
+	float _average = 0;
+	Student()
+	{
 
-# Precompiled Headers
-*.gch
-*.pch
+	}
+	Student(string name, string surname, float average)
+	{
+		_name = name;
+		_surname = surname;
+		_average = average;
+	}
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
 
-# Fortran module files
-*.mod
-*.smod
+	friend ostream& operator <<(ostream& output, const Student& student);
+	friend istream& operator >>(istream& input, Student& student);
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
 
-# Executables
-*.exe
-*.out
-*.app
+};
+
+ostream& operator <<(ostream& output, const Student& student) {
+	output << "Name:" << student._name << endl;
+	output << "Surname:" << student._surname << endl;
+	output << "Average:" << student._average << endl;
+	return output;
+}
+istream& operator >>(istream& input, Student& student) {
+	cout << "Name:";
+	getline(input, student._name);
+
+	cout << "Surname:";
+	getline(input, student._surname);
+
+	cout << "Average:";
+	input >> student._average;
+
+	cin.ignore();
+	return input;
+}
+
+
+class Group {
+public:
+	string _groupName;
+	Student** _students;
+	int _studentCount;
+
+	Group(string groupName, Student** students, int studentCount)
+	{
+		_groupName = groupName;
+		_students = students;
+		_studentCount = studentCount;
+	}
+	void addStudent(Student* student) {
+		Student** studentsTemp = new Student * [_studentCount + 1];
+
+		for (size_t i = 0; i < _studentCount; i++)
+		{
+			studentsTemp[i] = _students[i];
+		}
+		studentsTemp[_studentCount] = student;
+		_studentCount++;
+
+		delete[]_students;
+		_students = studentsTemp;
+
+	}
+
+
+	void getAllStudents() {
+		for (size_t i = 0; i < _studentCount; i++)
+		{
+			cout << *_students[i] << endl;
+		}
+	}
+
+
+	//addStudent()
+	//alllStudent()
+
+};
+
+
+
+void main() {
+
+	Student* s1 = new Student("Nazim", "Nazimli", 5.5);
+	Student* s2 = new Student("Fazil", "Fazilli", 3.3);
+	Student* s3 = new Student("Fikret", "Fikretli", 1.2);
+
+	int count = 3;
+	Student** students = new Student * [count] {s1, s2, s3};
+
+	Group g1("Group-1", students, count);
+
+	Student s4;
+
+	cin >> s4;
+	g1.addStudent(&s4);
+
+	g1.getAllStudents();
+
+
+}
